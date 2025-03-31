@@ -42,7 +42,7 @@ function getDaysInMonth(month: number, year: number) {
 export default function Calendar() {
   const [selectedDate, setSelectedDate] = useState<Date>(currentDate);
   const [selectedEvent, setSelectedEvent] = useState<Transaction | null>(null);
-  const [showAddTransaction, setShowAddTransaction] = useState(false);
+  // const [showAddTransaction, setShowAddTransaction] = useState(false);
 
   const { allTransactions } = useAppSelector((state: any) => state.transactions);
 
@@ -71,11 +71,11 @@ export default function Calendar() {
   const monthName = selectedDate.toLocaleString("default", { month: "long" });
   const year = selectedDate.getFullYear();
 
-  const handleAddTransaction = (transaction: Omit<Transaction, "id">) => {
-    // Implement add functionality
-    console.log("New transaction:", transaction);
-    setShowAddTransaction(false);
-  };
+  // const handleAddTransaction = (transaction: Omit<Transaction, "id">) => {
+  //   // Implement add functionality
+  //   console.log("New transaction:", transaction);
+  //   setShowAddTransaction(false);
+  // };
 
   return (
     <>
@@ -137,7 +137,7 @@ export default function Calendar() {
                 {day}
               </div>
             ))}
-            {daysInMonth.map((day, index) => (
+            {daysInMonth.map((day) => (
               <motion.div
                 key={day}
                 initial={{ opacity: 0, scale: 0.8 }}

@@ -1,8 +1,5 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { authService, SignInData, SignUpData, AuthResponse } from '../services/api';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../store';
-import { getUser } from '../store/slices/userSlice';
 
 interface User {
   id: string;

@@ -15,7 +15,7 @@ import { Card } from '../components/ui/card';
 import { Modal } from '../components/ui/modal';
 import { BudgetForm } from '../components/budgets/budget-form';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { fetchBudgets, createBudget, updateBudget, deleteBudget } from '../store/slices/budgetSlice';
+import { fetchBudgets, createBudget, updateBudget } from '../store/slices/budgetSlice';
 import { fetchInsights } from '../store/slices/insightSlice';
 import { Budget, Insight } from '../services/api';
 import toast from 'react-hot-toast';
@@ -72,14 +72,14 @@ export default function Budgets() {
     }
   };
 
-  const handleDeleteBudget = async (id: string) => {
-    try {
-      await dispatch(deleteBudget(id)).unwrap();
-      toast.success('Budget deleted successfully');
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to delete budget');
-    }
-  };
+  // const handleDeleteBudget = async (id: string) => {
+  //   try {
+  //     await dispatch(deleteBudget(id)).unwrap();
+  //     toast.success('Budget deleted successfully');
+  //   } catch (error: any) {
+  //     toast.error(error.message || 'Failed to delete budget');
+  //   }
+  // };
 
   const filteredBudgets = budgets.filter(budget =>
     budget.category.toLowerCase().includes(searchTerm.toLowerCase())

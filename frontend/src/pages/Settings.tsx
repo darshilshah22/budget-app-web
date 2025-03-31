@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { LogOut, Save } from "lucide-react";
+import { Save } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import PersonalInfo from "../components/settings/PersonalInfo";
 import { useUser } from "../hooks/useUser.ts";

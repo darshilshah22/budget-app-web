@@ -169,9 +169,9 @@ export default function Dashboard() {
                       `${name} ${(percent * 100).toFixed(0)}%`
                     }
                   >
-                    {categoryData.map((entry, index) => (
+                    {categoryData.map((entry: any, index: number) => (
                       <Cell
-                        key={`cell-${index}`}
+                        key={`cell-${entry}`}
                         fill={COLORS[index % COLORS.length]}
                       />
                     ))}
