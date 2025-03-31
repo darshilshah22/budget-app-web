@@ -33,7 +33,7 @@ export default function Settings() {
   const { user } = useUser();
 
   const handleLogout = () => {
-    navigate("/login");
+    navigate("/");
   };
 
   console.log(user);

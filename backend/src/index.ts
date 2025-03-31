@@ -15,7 +15,8 @@ import insightRoutes from './routes/insight.routes';
 
 // Import middleware
 import { errorHandler, notFound } from './middleware/error.middleware';
-import { connectToDatabase } from './mongoConnect';
+import { connectToDatabase } from './utils/mongoConnect';
+import mongoose from 'mongoose';
 
 // Load environment variables
 dotenv.config();
@@ -51,12 +52,10 @@ app.get('/', (req, res) => {
 app.use(notFound);
 app.use(errorHandler);
 
-// Connect to database at startup
-connectToDatabase()
-  .catch((err: any) => {
-    logger.error('Failed to connect to database', err);
-    process.exit(1);
-  });
+// Database connection
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/budget-app';
+
+connectToDatabase(MONGODB_URI);
 
 // Start server
 const PORT = process.env.PORT || 3000;
