@@ -15,17 +15,26 @@ function App() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(getUser()).then(() => {
-      if (isAuthenticated) {
-        navigate("/dashboard");
-      } else {
-        navigate("/");
-      }
-    });
+    const user = localStorage.getItem("user");
+    if (user) {
+      dispatch(getUser()).then(() => {
+        if (isAuthenticated) {
+          navigate("/dashboard");
+        } else {
+          navigate("/");
+        }
+      });
+    } else {
+      navigate("/");
+    }
   }, [dispatch, isAuthenticated, navigate]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900 dark:border-white"></div>
+      </div>
+    );
   }
 
   return (
