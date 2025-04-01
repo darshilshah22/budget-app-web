@@ -11,6 +11,7 @@ function App() {
   const isAuthenticated = useSelector(
     (state: RootState) => state.user.isAuthenticated
   );
+  const { isLoading } = useSelector((state: RootState) => state.user);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -22,7 +23,11 @@ function App() {
     } else {
       navigate("/");
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, isLoading]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-900">
