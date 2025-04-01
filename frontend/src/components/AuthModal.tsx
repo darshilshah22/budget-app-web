@@ -12,7 +12,6 @@ import {
   Eye,
   EyeOff,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useAppDispatch } from "../store/hooks";
 interface AuthModalProps {
@@ -23,7 +22,6 @@ interface AuthModalProps {
 export function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const dispatch = useAppDispatch();
   const { isLoading, error } = useSelector((state: RootState) => state.user);
-  const navigate = useNavigate();
 
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState("");

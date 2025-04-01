@@ -3,7 +3,6 @@ import { Lock, Eye, EyeOff, XCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { SettingTitle } from "../../pages/Settings";
 // import { updateUserPassword } from "../../store/slices/userSlice";
-import { useAppDispatch } from "../../store/hooks";
 import toast from "react-hot-toast";
 
 interface PasswordStrengthProps {
@@ -48,7 +47,6 @@ const PasswordStrength: React.FC<PasswordStrengthProps> = ({ password }) => {
 };
 
 const ChangePasswordSection: React.FC = () => {
-  const dispatch = useAppDispatch();
   const [showPasswords, setShowPasswords] = useState({
     current: false,
     new: false,
