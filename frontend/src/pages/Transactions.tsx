@@ -34,7 +34,6 @@ export default function Transactions() {
   );
 
   const handleEdit = async (transaction: Transaction) => {
-    // Implement edit functionality
     console.log("Edit transaction:", transaction);
   };
 
