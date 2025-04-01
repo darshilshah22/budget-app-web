@@ -59,37 +59,50 @@ export default function Navigation() {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-gray-900 border-b border-gray-800 animate-fade-in">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20">
-          <div className="flex-shrink-0 flex items-center cursor-pointer" onClick={() => navigate("/dashboard")}>
+          <div
+            className="flex-shrink-0 flex items-center cursor-pointer"
+            onClick={() => navigate("/dashboard")}
+          >
             <h1 className="text-xl font-bold text-white">Budget App</h1>
           </div>
           <div className="hidden sm:ml-8 sm:flex sm:space-x-8">
-            {navigation.map((item) => {
-              const isActive = location.pathname === item.href;
-              return (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-all duration-200 ${
-                    isActive
-                      ? "border-blue-500 text-white"
-                      : "border-transparent text-gray-400 hover:border-gray-600 hover:text-white"
-                  }`}
-                >
-                  <item.icon className="h-5 w-5 mr-2" />
-                  {item.name}
-                </Link>
-              );
-            })}
+            {user &&
+              navigation.map((item) => {
+                const isActive = location.pathname === item.href;
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-all duration-200 ${
+                      isActive
+                        ? "border-blue-500 text-white"
+                        : "border-transparent text-gray-400 hover:border-gray-600 hover:text-white"
+                    }`}
+                  >
+                    <item.icon className="h-5 w-5 mr-2" />
+                    {item.name}
+                  </Link>
+                );
+              })}
           </div>
 
-          <div className="hidden sm:ml-6 sm:flex sm:items-center space-x-8 cursor-pointer" onClick={() => navigate("/settings")}>
-            <div className="flex items-center gap-3 text-gray-300">
-              <div className="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center">
-                <img src={profile} alt="Profile" className="w-full h-full object-cover rounded-full" />
+          {user && (
+            <div
+              className="hidden sm:ml-6 sm:flex sm:items-center space-x-8 cursor-pointer"
+              onClick={() => navigate("/settings")}
+            >
+              <div className="flex items-center gap-3 text-gray-300">
+                <div className="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center">
+                  <img
+                    src={profile}
+                    alt="Profile"
+                    className="w-full h-full object-cover rounded-full"
+                  />
+                </div>
+                <span className="text-lg font-medium">{user?.firstName}</span>
               </div>
-              <span className="text-lg font-medium">{user?.firstName}</span>
             </div>
-          </div>
+          )}
 
           <div className="flex items-center sm:hidden">
             <button
