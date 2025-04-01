@@ -24,9 +24,10 @@ dotenv.config();
 const app = express();
 
 // Middleware
+console.log(process.env.FRONTEND_URL);
 app.use(helmet());
 app.use(cors({
-  origin: process.env.FRONTEND_URL,
+  origin: 'https://budget-app-web-six.vercel.app'
 }));
 app.use(compression());
 app.use(express.json());
