@@ -1,6 +1,7 @@
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
+import { useEffect } from 'react';
 
 interface PrivateRouteProps {
   children: React.ReactNode;
@@ -8,14 +9,19 @@ interface PrivateRouteProps {
 
 export default function PrivateRoute({ children }: PrivateRouteProps) {
   const { user, isLoading } = useSelector((state: RootState) => state.user);
+  const navigate = useNavigate();
 
   if (isLoading) {
     return <div>Loading...</div>; // Prevent redirect while checking auth
   }
 
-  if (!user) {
-    return <Navigate to="/" />;
-  }
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    } else {
+      navigate("/");
+    }
+  }, [user]);
 
   return <>{children}</>;
 } 

@@ -70,13 +70,13 @@ export const login = async (req: Request, res: Response) => {
     // Find user
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json(new ApiError(401, "Invalid credentials"));
+      return res.status(401).json(new ApiError(401, "Invalid email or password", null, "Invalid email or password"));
     }
 
     // Check password
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      return res.status(401).json(new ApiError(401, "Invalid credentials"));
+      return res.status(401).json(new ApiError(401, "Invalid email or password", null, "Invalid email or password"));
     }
 
     // Generate token
@@ -94,7 +94,9 @@ export const login = async (req: Request, res: Response) => {
       })
     );
   } catch (error) {
+    console.log(error);
     if (error instanceof Error) {
+      console.log(error.message);
       res.status(400).json(new ApiError(400, error.message));
     } else {
       res.status(500).json(new ApiError(500, "Internal server error"));

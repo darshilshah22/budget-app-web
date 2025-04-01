@@ -6,6 +6,7 @@ import { useUser } from "../hooks/useUser.ts";
 import CurrencySettings from "../components/settings/CurrencySettings.tsx";
 import ChangePassword from "../components/settings/ChangePassword.tsx";
 import LogoutSetting from "../components/settings/LogoutSetting.tsx";
+
 export const SettingTitle = ({
   title,
   description,
@@ -33,6 +34,7 @@ export default function Settings() {
   const { user } = useUser();
 
   const handleLogout = () => {
+    localStorage.removeItem("token");
     navigate("/");
   };
 

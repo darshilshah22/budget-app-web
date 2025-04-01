@@ -2,7 +2,6 @@ import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
 
-console.log(API_URL);
 export const api = axios.create({
   baseURL: API_URL,
   headers: {
@@ -30,7 +29,6 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem("token");
-      window.location.href = "/";
     }
     return Promise.reject(error);
   }
@@ -67,17 +65,10 @@ export const authService = {
     return response.data;
   },
 
-  signIn: async (data: SignInData): Promise<AuthResponse> => {
-    try {
-      const response = await api.post<AuthResponse>("/users/login", data);
-      console.log(response.data.data.token);
-      if (response.data.data.token) {
-        localStorage.setItem("token", response.data.data.token);
-      }
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+  signIn: async (credentials: SignInData): Promise<AuthResponse> => {
+    const response = await api.post<AuthResponse>('/users/login', credentials);
+    console.log(response.data);
+    return response.data;
   },
 
   signOut: () => {

@@ -1,57 +1,16 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Layout from "./components/Layout";
-import Dashboard from "./pages/Dashboard";
-import Budgets from "./pages/Budgets";
-import Transactions from "./pages/Transactions";
-import Insights from "./pages/Insights";
-import Settings from "./pages/Settings";
-import LandingPage from "./pages/LandingPage";
-import PrivateRoute from "./components/PrivateRoute";
-import { useDispatch, useSelector } from "react-redux";
-import { getUser } from "./store/slices/userSlice";
-import { useEffect } from "react";
-import { AppDispatch, RootState } from "./store";
-import Calendar from "./pages/Calendar";
+import { Outlet } from "react-router-dom";
+import Navigation from "./components/Navigation";
 
 function App() {
-  const dispatch = useDispatch<AppDispatch>();
-  const { isLoading } = useSelector((state: RootState) => state.user);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      dispatch(getUser(token));
-    }
-  }, [dispatch]);
-
-  if (isLoading) {
-    return <div>Loading...</div>; // Prevent redirect while checking auth
-  }
+  const token = localStorage.getItem("token");
 
   return (
-    <Router>
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<LandingPage />} />
-
-        {/* Protected Routes */}
-        <Route
-          path="/dashboard"
-          element={
-            <PrivateRoute>
-              <Layout />
-            </PrivateRoute>
-          }
-        >
-          <Route index element={<Dashboard />} />
-          <Route path="budgets" element={<Budgets />} />
-          <Route path="transactions" element={<Transactions />} />
-          <Route path="calendar" element={<Calendar />} />
-          <Route path="insights" element={<Insights />} />
-          <Route path="settings" element={<Settings />} />
-        </Route>
-      </Routes>
-    </Router>
+    <div className="min-h-screen bg-gray-900">
+      {token && <Navigation />}
+      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 pt-24">
+        <Outlet />
+      </main>
+    </div>
   );
 }
 

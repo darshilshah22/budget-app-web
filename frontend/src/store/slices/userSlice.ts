@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { api } from "../../services/api";
+import { api, authService } from "../../services/api";
 import axios from "axios";
-
+import toast from "react-hot-toast";
 interface User {
-  _id: string;
+  id: string;
   email: string;
   firstName: string;
   lastName: string;
@@ -14,52 +14,101 @@ interface UserState {
   user: User | null;
   isLoading: boolean;
   error: string | null;
+  status: boolean;
 }
 
 const initialState: UserState = {
   user: null,
   isLoading: false,
   error: null,
+  status: false,
 };
 
 export const login = createAsyncThunk(
   "user/login",
-  async (credentials: { email: string; password: string }) => {
-    const response = await api.post("/users/login", credentials);
-    return response.data.data;
+  async (
+    credentials: { email: string; password: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await authService.signIn(credentials);
+      localStorage.setItem("token", response.data.token);
+      return response.data;
+    } catch (error: any) {
+      console.log(error);
+      return rejectWithValue(error.response?.data?.message || "Login failed");
+    }
   }
 );
 
 export const register = createAsyncThunk(
   "user/register",
-  async (userData: { name: string; email: string; password: string }) => {
-    const response = await api.post("/users/register", userData);
-    return response.data.data;
+  async (
+    userData: { name: string; email: string; password: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await api.post("/users/register", userData);
+      localStorage.setItem("token", response.data.token);
+      return response.data.data;
+    } catch (error: any) {
+      console.log(error);
+      return rejectWithValue(
+        error.response?.data?.message || "Registration failed"
+      );
+    }
   }
 );
 
 export const logout = createAsyncThunk("user/logout", async () => {
-  await api.post("/users/logout");
+  localStorage.removeItem("token");
 });
 
-export const getUser = createAsyncThunk("user/getUser", async (token: string) => {
-  try {
-    if (!token) {
-      throw new Error("No authentication token found");
+export const getUser = createAsyncThunk(
+  "user/getUser",
+  async (token: string) => {
+    try {
+      if (!token) {
+        throw new Error("No authentication token found");
+      }
+      const response = await api.get("/users/profile", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        localStorage.removeItem("token");
+      }
+      throw error;
     }
-    const response = await api.get("/users/profile", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data.data;
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 401) {
-      localStorage.removeItem("token");
-    }
-    throw error;
   }
-});
+);
+
+export const updateUserPassword = createAsyncThunk(
+  "user/updateUserPassword",
+  async (creds: { newPassword: string; currentPassword: string }) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("No authentication token found");
+      }
+      const response = await api.post("/users/update-password", creds, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        toast.error("Current password is incorrect");
+        throw new Error("Current password is incorrect");
+      }
+      throw error;
+    }
+  }
+);
 
 const userSlice = createSlice({
   name: "user",
@@ -79,11 +128,11 @@ const userSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = action.payload;
-        localStorage.setItem("token", action.payload.token);
+        state.status = true;
       })
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message || "Login failed";
+        state.error = action.payload as string;
       })
       // Register
       .addCase(register.pending, (state) => {
@@ -93,6 +142,7 @@ const userSlice = createSlice({
       .addCase(register.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = action.payload;
+        state.status = true;
         localStorage.setItem("token", action.payload.token);
       })
       .addCase(register.rejected, (state, action) => {
@@ -102,6 +152,7 @@ const userSlice = createSlice({
       // Logout
       .addCase(logout.fulfilled, (state) => {
         state.user = null;
+        localStorage.removeItem("token");
       })
       // Get User
       .addCase(getUser.pending, (state) => {
@@ -111,6 +162,7 @@ const userSlice = createSlice({
       .addCase(getUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = action.payload;
+        state.status = true;
       })
       .addCase(getUser.rejected, (state, action) => {
         state.isLoading = false;

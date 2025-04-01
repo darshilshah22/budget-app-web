@@ -12,13 +12,11 @@ import {
   Settings,
   BarChart,
 } from "lucide-react";
-import { useSelector } from "react-redux";
 import { logout } from "../store/slices/userSlice";
-import { RootState } from "../store";
 import { useAppDispatch } from "../store/hooks";
 import { fetchAllTransactions } from "../store/slices/transactionSlice";
 import profile from "../assets/profile.png";
-
+import { useUser } from "../hooks/useUser";
 interface NavigationItem {
   name: string;
   href: string;
@@ -27,16 +25,16 @@ interface NavigationItem {
 
 const navigation: NavigationItem[] = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Transactions", href: "/dashboard/transactions", icon: Receipt },
-  { name: "Budgets", href: "/dashboard/budgets", icon: PiggyBank },
-  { name: "Calendar", href: "/dashboard/calendar", icon: Calendar },
-  { name: "Insights", href: "/dashboard/insights", icon: BarChart },
-  { name: "Settings", href: "/dashboard/settings", icon: Settings },
+  { name: "Transactions", href: "/transactions", icon: Receipt },
+  { name: "Budgets", href: "/budgets", icon: PiggyBank },
+  { name: "Calendar", href: "/calendar", icon: Calendar },
+  { name: "Insights", href: "/insights", icon: BarChart },
+  { name: "Settings", href: "/settings", icon: Settings },
 ];
 
 export default function Navigation() {
   const location = useLocation();
-  const { user } = useSelector((state: RootState) => state.user);
+  const { user } = useUser();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleSignOut = async () => {
@@ -52,8 +50,10 @@ export default function Navigation() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(fetchAllTransactions());
-  }, [dispatch]);
+    if (user) {
+      dispatch(fetchAllTransactions());
+    }
+  }, [dispatch, user]);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-gray-900 border-b border-gray-800 animate-fade-in">
@@ -82,7 +82,7 @@ export default function Navigation() {
             })}
           </div>
 
-          <div className="hidden sm:ml-6 sm:flex sm:items-center space-x-8 cursor-pointer" onClick={() => navigate("/dashboard/settings")}>
+          <div className="hidden sm:ml-6 sm:flex sm:items-center space-x-8 cursor-pointer" onClick={() => navigate("/settings")}>
             <div className="flex items-center gap-3 text-gray-300">
               <div className="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center">
                 <img src={profile} alt="Profile" className="w-full h-full object-cover rounded-full" />
