@@ -1,30 +1,13 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { AuthModal } from "../components/AuthModal";
 import { ArrowRight } from "lucide-react";
-import { getUser } from "../store/slices/userSlice";
-import { useAppDispatch } from "../store/hooks";
-import { useNavigate } from "react-router-dom";
 
 export default function LandingPage() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
   const handleClose = useCallback(() => {
     setIsAuthModalOpen(false);
   }, []);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      dispatch(getUser(token)).then((data) => {
-        const user = data.payload;
-        if (user) {
-          navigate("/dashboard");
-        }
-      });
-    }
-  }, [dispatch, navigate]);
 
   return (
     <>

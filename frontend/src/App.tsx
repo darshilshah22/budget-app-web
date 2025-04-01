@@ -3,19 +3,29 @@ import Navigation from "./components/Navigation";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "./store";
+import { getUser } from "./store/slices/userSlice";
+import { useAppDispatch } from "./store/hooks";
 
 function App() {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const isAuthenticated = useSelector(
     (state: RootState) => state.user.isAuthenticated
   );
 
-  const navigate = useNavigate();
-
   useEffect(() => {
-    if (!isAuthenticated) {
+    const token = localStorage.getItem("token");
+    if (token) {
+      dispatch(getUser(token)).then((data) => {
+        const user = data.payload;
+        if (user) {
+          navigate("/dashboard");
+        }
+      });
+    } else {
       navigate("/");
     }
-  }, [isAuthenticated]);
+  }, [dispatch, navigate]);
 
   return (
     <div className="min-h-screen bg-gray-900">
