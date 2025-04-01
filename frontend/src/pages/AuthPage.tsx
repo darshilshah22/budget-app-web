@@ -17,7 +17,7 @@ const AuthPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { status, isLoading, error } = useSelector((state: RootState) => state.user);
+  const { isAuthenticated: status, isLoading, error } = useSelector((state: RootState) => state.user);
 
   const toggleForm = () => {
     setIsLogin(!isLogin);

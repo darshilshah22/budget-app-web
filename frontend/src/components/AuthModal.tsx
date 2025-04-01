@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { useAppDispatch } from "../store/hooks";
+import { useNavigate } from "react-router-dom";
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -29,6 +30,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,10 +52,10 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
             password,
           })
         ).unwrap();
-        // toast.success("Login successful");
-        // navigate("/dashboard");
+        toast.success("Login successful");
+        navigate("/dashboard");
       }
-      // onClose();
+      onClose();
     } catch (error) {
       // Error is handled by Redux
       console.error("Authentication failed:", error);

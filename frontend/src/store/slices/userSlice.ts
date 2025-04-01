@@ -14,14 +14,14 @@ interface UserState {
   user: User | null;
   isLoading: boolean;
   error: string | null;
-  status: boolean;
+  isAuthenticated: boolean;
 }
 
 const initialState: UserState = {
   user: null,
   isLoading: false,
   error: null,
-  status: false,
+  isAuthenticated: false,
 };
 
 export const login = createAsyncThunk(
@@ -128,7 +128,7 @@ const userSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = action.payload;
-        state.status = true;
+        state.isAuthenticated = true;
       })
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;
@@ -142,7 +142,7 @@ const userSlice = createSlice({
       .addCase(register.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = action.payload;
-        state.status = true;
+        state.isAuthenticated = true;
         localStorage.setItem("token", action.payload.token);
       })
       .addCase(register.rejected, (state, action) => {
@@ -153,6 +153,7 @@ const userSlice = createSlice({
       .addCase(logout.fulfilled, (state) => {
         state.user = null;
         localStorage.removeItem("token");
+        state.isAuthenticated = false;
       })
       // Get User
       .addCase(getUser.pending, (state) => {
@@ -162,7 +163,7 @@ const userSlice = createSlice({
       .addCase(getUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = action.payload;
-        state.status = true;
+        state.isAuthenticated = true;
       })
       .addCase(getUser.rejected, (state, action) => {
         state.isLoading = false;

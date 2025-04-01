@@ -6,7 +6,8 @@ import { useUser } from "../hooks/useUser.ts";
 import CurrencySettings from "../components/settings/CurrencySettings.tsx";
 import ChangePassword from "../components/settings/ChangePassword.tsx";
 import LogoutSetting from "../components/settings/LogoutSetting.tsx";
-
+import { logout } from "../store/slices/userSlice.ts";
+import { useAppDispatch } from "../store/hooks.ts";
 export const SettingTitle = ({
   title,
   description,
@@ -32,10 +33,12 @@ export const SettingTitle = ({
 export default function Settings() {
   const navigate = useNavigate();
   const { user } = useUser();
+  const dispatch = useAppDispatch();
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/");
+    dispatch(logout()).then(() => {
+      navigate("/");
+    });
   };
 
   console.log(user);
