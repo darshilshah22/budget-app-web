@@ -15,16 +15,14 @@ function App() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    const user = localStorage.getItem("user");
-    console.log(user);
-    if (user) {
-      dispatch(getUser()).then(() => {
+    dispatch(getUser()).then(() => {
+      if (isAuthenticated) {
         navigate("/dashboard");
-      });
-    } else {
-      navigate("/");
-    }
-  }, [isAuthenticated, navigate, isLoading]);
+      } else {
+        navigate("/");
+      }
+    });
+  }, [dispatch, isAuthenticated, navigate]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -32,7 +30,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-900">
-      {isAuthenticated && <Navigation />}
+      <Navigation />
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 pt-24">
         <Outlet />
       </main>
