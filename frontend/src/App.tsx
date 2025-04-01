@@ -18,8 +18,9 @@ function App() {
     const user = localStorage.getItem("user");
     console.log(user);
     if (user) {
-      dispatch(getUser());
-      navigate("/dashboard");
+      dispatch(getUser()).then(() => {
+        navigate("/dashboard");
+      });
     } else {
       navigate("/");
     }
