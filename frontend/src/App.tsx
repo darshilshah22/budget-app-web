@@ -1,12 +1,16 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import Navigation from "./components/Navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { getUser } from "./store/slices/userSlice";
 import { useAppDispatch } from "./store/hooks";
+import { useSelector } from "react-redux";
+import { RootState } from "./store";
 
 function App() {
   const navigate = useNavigate();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.user.isAuthenticated
+  );
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -14,7 +18,6 @@ function App() {
     console.log(user);
     if (user) {
       dispatch(getUser());
-      setIsAuthenticated(true);
       navigate("/dashboard");
     } else {
       navigate("/");
