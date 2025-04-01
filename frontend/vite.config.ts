@@ -26,4 +26,7 @@ export default defineConfig({
         : 'http://localhost:3000/api' // Use localhost in dev
     ),
   },
-})
+  build: {
+    chunkSizeWarningLimit: 1000,
+  }
+});
