@@ -17,9 +17,9 @@ export default function PrivateRoute({ children }: PrivateRouteProps) {
 
   useEffect(() => {
     if (!user) {
-      navigate("/login");
-    } else {
       navigate("/");
+    } else {
+      navigate("/dashboard");
     }
   }, [user]);
 

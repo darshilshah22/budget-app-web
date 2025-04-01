@@ -1,31 +1,25 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import Navigation from "./components/Navigation";
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "./store";
+import { useEffect, useState } from "react";
 import { getUser } from "./store/slices/userSlice";
 import { useAppDispatch } from "./store/hooks";
 
 function App() {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const isAuthenticated = useSelector(
-    (state: RootState) => state.user.isAuthenticated
-  );
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      dispatch(getUser(token)).then((data) => {
-        const user = data.payload;
-        if (user) {
-          navigate("/dashboard");
-        }
-      });
+    const user = localStorage.getItem("user");
+    console.log(user);
+    if (user) {
+      dispatch(getUser());
+      setIsAuthenticated(true);
+      navigate("/dashboard");
     } else {
       navigate("/");
     }
-  }, [dispatch, navigate]);
+  }, [isAuthenticated, navigate]);
 
   return (
     <div className="min-h-screen bg-gray-900">

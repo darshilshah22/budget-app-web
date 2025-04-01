@@ -32,7 +32,7 @@ export const login = createAsyncThunk(
   ) => {
     try {
       const response = await authService.signIn(credentials);
-      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data));
       return response.data;
     } catch (error: any) {
       console.log(error);
@@ -49,7 +49,7 @@ export const register = createAsyncThunk(
   ) => {
     try {
       const response = await api.post("/users/register", userData);
-      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data));
       return response.data.data;
     } catch (error: any) {
       console.log(error);
@@ -61,25 +61,26 @@ export const register = createAsyncThunk(
 );
 
 export const logout = createAsyncThunk("user/logout", async () => {
-  localStorage.removeItem("token");
+  localStorage.removeItem("user");
 });
 
 export const getUser = createAsyncThunk(
   "user/getUser",
-  async (token: string) => {
+  async () => {
     try {
-      if (!token) {
+      const user = localStorage.getItem("user");
+      if (!user) {
         throw new Error("No authentication token found");
       }
       const response = await api.get("/users/profile", {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${JSON.parse(user).token}`,
         },
       });
       return response.data.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 401) {
-        localStorage.removeItem("token");
+        localStorage.removeItem("user");
       }
       throw error;
     }
@@ -90,13 +91,13 @@ export const updateUserPassword = createAsyncThunk(
   "user/updateUserPassword",
   async (creds: { newPassword: string; currentPassword: string }) => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
+      const user = localStorage.getItem("user");
+      if (!user) {
         throw new Error("No authentication token found");
       }
       const response = await api.post("/users/update-password", creds, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${JSON.parse(user).token}`,
         },
       });
       return response.data.data;
@@ -143,7 +144,7 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.user = action.payload;
         state.isAuthenticated = true;
-        localStorage.setItem("token", action.payload.token);
+        localStorage.setItem("user", JSON.stringify(action.payload));
       })
       .addCase(register.rejected, (state, action) => {
         state.isLoading = false;
@@ -152,7 +153,7 @@ const userSlice = createSlice({
       // Logout
       .addCase(logout.fulfilled, (state) => {
         state.user = null;
-        localStorage.removeItem("token");
+        localStorage.removeItem("user");
         state.isAuthenticated = false;
       })
       // Get User

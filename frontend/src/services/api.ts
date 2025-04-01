@@ -12,9 +12,9 @@ export const api = axios.create({
 // Add a request interceptor to add the auth token
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    const user = localStorage.getItem("user");
+    if (user) {
+      config.headers.Authorization = `Bearer ${JSON.parse(user).token}`;
     }
     return config;
   },
@@ -28,7 +28,7 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem("token");
+      localStorage.removeItem("user");
     }
     return Promise.reject(error);
   }
@@ -60,7 +60,7 @@ export const authService = {
   signUp: async (data: SignUpData): Promise<AuthResponse> => {
     const response = await api.post<AuthResponse>("/users/register", data);
     if (response.data.data.token) {
-      localStorage.setItem("token", response.data.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data.data));
     }
     return response.data;
   },
@@ -72,24 +72,24 @@ export const authService = {
   },
 
   signOut: () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem("user");
   },
 
   getCurrentUser: async (): Promise<AuthResponse> => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
+      const user = localStorage.getItem("user");
+      if (!user) {
         throw new Error("No authentication token found");
       }
       const response = await api.get("/users/profile", {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${JSON.parse(user).token}`,
         },
       });
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 401) {
-        localStorage.removeItem("token");
+        localStorage.removeItem("user");
       }
       throw error;
     }
@@ -214,14 +214,14 @@ export const budgetService = {
 
 export interface Insight {
   _id: string;
-  type: 'warning' | 'success' | 'info' | 'trend' | 'recommendation' | 'alert';
+  type: "warning" | "success" | "info" | "trend" | "recommendation" | "alert";
   title: string;
   description: string;
   category: string;
   amount: number;
   percentage: number;
   createdAt: string;
-  priority: 'low' | 'medium' | 'high';
+  priority: "low" | "medium" | "high";
   tags: string[];
   relatedBudgets: string[];
   actionItems?: string[];
