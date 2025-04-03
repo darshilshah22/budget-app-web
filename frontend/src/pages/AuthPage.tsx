@@ -38,7 +38,8 @@ const AuthPage: React.FC = () => {
       if (!isLogin) {
         await dispatch(
           register({
-            name: `${firstName} ${lastName}`,
+            firstName,
+            lastName,
             email,
             password,
           })
