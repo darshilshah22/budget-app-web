@@ -1,29 +1,18 @@
-import React, { useState } from "react";
-import { User, Mail, Phone, MapPin } from "lucide-react";
+import { useState } from "react";
+import { User, Mail, Save } from "lucide-react";
 import { motion } from "framer-motion";
 import { SettingTitle } from "../../pages/Settings";
+import { User as UserType } from "../../store/slices/userSlice";
 
 interface PersonalInfoProps {
-  initialData?: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone?: string;
-    location?: string;
-  };
+  initialData?: UserType;
   onUpdate?: (data: any) => void;
 }
 
-const PersonalInformationSection: React.FC<PersonalInfoProps> = ({
-  initialData = {
-    firstName: "John",
-    lastName: "Doe",
-    email: "john.doe@example.com",
-    phone: "+1 (555) 123-4567",
-    location: "San Francisco, CA",
-  },
+export default function PersonalInfo({
+  initialData,
   onUpdate,
-}) => {
+}: PersonalInfoProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(initialData);
 
@@ -44,19 +33,24 @@ const PersonalInformationSection: React.FC<PersonalInfoProps> = ({
           description="Manage your personal information and preferences"
           IconEle={User}
         />
-        {isEditing && <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={handleSave}
-          className="ml-auto inline-flex items-center px-6 py-3 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl"
-        >
-          Save Changes
-        </motion.button>}
+        {isEditing && (
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="inline-flex items-center px-6 py-3 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+            onClick={handleSave}
+          >
+            <Save className="h-5 w-5 mr-2" />
+            Save Changes
+          </motion.button>
+        )}
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsEditing(!isEditing)}
-          className={`${isEditing ? "ml-4" : "ml-auto"} inline-flex items-center px-6 py-3 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl`}
+          className={`${
+            isEditing ? "ml-4" : "ml-auto"
+          } inline-flex items-center px-6 py-3 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl`}
         >
           {isEditing ? "Cancel" : "Edit"}
         </motion.button>
@@ -69,15 +63,15 @@ const PersonalInformationSection: React.FC<PersonalInfoProps> = ({
           {isEditing ? (
             <input
               type="text"
-              value={formData.firstName}
+              value={formData?.firstName}
               onChange={(e) =>
-                setFormData({ ...formData, firstName: e.target.value })
+                setFormData({ ...formData!, firstName: e.target.value })
               }
               className="flex-1 border rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-300"
               placeholder="Full Name"
             />
           ) : (
-            <span className="text-white">{formData.firstName}</span>
+            <span className="text-white">{formData?.firstName}</span>
           )}
         </div>
 
@@ -87,45 +81,44 @@ const PersonalInformationSection: React.FC<PersonalInfoProps> = ({
           {isEditing ? (
             <input
               type="email"
-              value={formData.email}
+              value={formData?.email}
               onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
+                setFormData({ ...formData!, email: e.target.value })
               }
               className="flex-1 border rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-300"
               placeholder="Email Address"
             />
           ) : (
-            <span className="text-white">{formData.email}</span>
+            <span className="text-white">{formData?.email}</span>
           )}
         </div>
 
         {/* Phone Field */}
-        <div className="flex items-center">
+        {/* <div className="flex items-center">
           <Phone className="mr-6 text-gray-500" />
           {isEditing ? (
             <input
               type="tel"
-              value={formData.phone}
+              value={formData?.phone}
               onChange={(e) =>
-                setFormData({ ...formData, phone: e.target.value })
+                setFormData({ ...formData!, phone: e.target.value })
               }
               className="flex-1 border rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-300"
               placeholder="Phone Number"
             />
           ) : (
             <span className="text-white">
-              {formData.phone || "Not provided"}
+              {formData?.phone || "Not provided"}
             </span>
           )}
         </div>
 
-        {/* Location Field */}
         <div className="flex items-center">
           <MapPin className="mr-6 text-gray-500" />
           {isEditing ? (
             <input
               type="text"
-              value={formData.location}
+              value={formData?.location}
               onChange={(e) =>
                 setFormData({ ...formData, location: e.target.value })
               }
@@ -134,10 +127,10 @@ const PersonalInformationSection: React.FC<PersonalInfoProps> = ({
             />
           ) : (
             <span className="text-white">
-              {formData.location || "Not specified"}
+              {formData?.location || "Not specified"}
             </span>
           )}
-        </div>
+        </div> */}
       </div>
 
       {/* {isEditing && (
@@ -152,6 +145,4 @@ const PersonalInformationSection: React.FC<PersonalInfoProps> = ({
       )} */}
     </motion.div>
   );
-};
-
-export default PersonalInformationSection;
+}

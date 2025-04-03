@@ -25,17 +25,6 @@ api.interceptors.request.use(
   }
 );
 
-// Add a response interceptor to handle errors
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem("user");
-    }
-    return Promise.reject(error);
-  }
-);
-
 export interface SignUpData {
   firstName: string;
   lastName: string;
@@ -158,8 +147,8 @@ export const transactionService = {
     return response.data;
   },
 
-  updateTransaction: async (id: string, data: Partial<CreateTransactionData>): Promise<TransactionResponse> => {
-    const response = await api.patch<TransactionResponse>(`/transactions/${id}`, data);
+  updateTransaction: async (id: string, data: Partial<Transaction>): Promise<TransactionResponse> => {
+    const response = await api.put<TransactionResponse>(`/transactions/${id}`, data);
     return response.data;
   },
 
@@ -171,6 +160,7 @@ export const transactionService = {
 export interface Budget {
   _id: string;
   user: string;
+  name: string;
   category: string;
   amount: number;
   spent: number;

@@ -24,10 +24,10 @@ dotenv.config();
 const app = express();
 
 // Middleware
-console.log(process.env.FRONTEND_URL);
 app.use(helmet());
 app.use(cors({
-  origin: 'https://budget-app-web-six.vercel.app'
+  origin: process.env.NODE_ENV === 'production' ? 'https://budget-app-web-six.vercel.app' : 'http://localhost:5173',
+  credentials: true,
 }));
 app.use(compression());
 app.use(express.json());

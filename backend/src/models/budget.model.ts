@@ -5,10 +5,8 @@ export interface IBudget extends Document {
   name: string;
   amount: number;
   category: string;
-  period: 'daily' | 'weekly' | 'monthly' | 'yearly' | 'custom';
   startDate?: Date;
   endDate?: Date;
-  type: 'income' | 'expense';
   description?: string;
   isActive: boolean;
   spent: number;
@@ -43,21 +41,11 @@ const budgetSchema = new Schema<IBudget>({
     required: true,
     trim: true
   },
-  period: {
-    type: String,
-    required: true,
-    enum: ['daily', 'weekly', 'monthly', 'yearly', 'custom']
-  },
   startDate: {
     type: Date
   },
   endDate: {
     type: Date
-  },
-  type: {
-    type: String,
-    required: true,
-    enum: ['income', 'expense']
   },
   description: {
     type: String,

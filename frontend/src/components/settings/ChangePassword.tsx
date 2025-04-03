@@ -141,8 +141,9 @@ const ChangePasswordSection: React.FC = () => {
                   currentPassword: e.target.value,
                 }))
               }
+              placeholder="••••••••"
               className={`
-                w-full px-3 py-2 border rounded-md outline-none
+                w-full px-3 py-2 border border-gray-700 rounded-md outline-none placeholder-gray-400 bg-gray-900 text-white focus:border-blue-500 focus:ring-blue-500 focus:ring-opacity-50
                 ${
                   passwordErrors.currentPassword
                     ? "border-red-500"
@@ -180,8 +181,9 @@ const ChangePasswordSection: React.FC = () => {
                   newPassword: e.target.value,
                 }))
               }
+              placeholder="••••••••"
               className={`
-                w-full px-3 py-2 border rounded-md outline-none
+                w-full px-3 py-2 border border-gray-700 rounded-md outline-none placeholder-gray-400 bg-gray-900 text-white focus:border-blue-500 focus:ring-blue-500 focus:ring-opacity-50
                 ${
                   passwordErrors.newPassword
                     ? "border-red-500"
@@ -222,8 +224,9 @@ const ChangePasswordSection: React.FC = () => {
                   confirmPassword: e.target.value,
                 }))
               }
+              placeholder="••••••••"
               className={`
-                w-full px-3 py-2 border rounded-md outline-none
+                w-full px-3 py-2 border border-gray-700 rounded-md outline-none placeholder-gray-400 bg-gray-900 text-white focus:border-blue-500 focus:ring-blue-500 focus:ring-opacity-50
                 ${
                   passwordErrors.confirmPassword
                     ? "border-red-500"

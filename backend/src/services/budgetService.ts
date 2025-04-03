@@ -27,8 +27,6 @@ export class BudgetService {
             },
           });
 
-          console.log("transactions: ", transactions);
-
           // Calculate total spent
           const totalSpent = transactions.reduce(
             (sum, transaction) => sum + transaction.amount,

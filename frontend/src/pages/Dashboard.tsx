@@ -6,20 +6,28 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, Pie, PieChart, Cell } from "recharts";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+  Pie,
+  PieChart,
+  Cell,
+} from "recharts";
 import { ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
-import { 
-  monthlyData, 
-  categoryData, 
-  summaryCards} from '../data/sample-data';
+import { monthlyData, categoryData, summaryCards } from "../data/sample-data";
 import { RootState } from "../store";
 import { useSelector } from "react-redux";
 import { useAppSelector } from "../store/hooks";
 import { Transaction } from "../services/api";
 import { formatDateReadable } from "../utils";
 
-const COLORS = ['#4ade80', '#f87171', '#fbbf24', '#60a5fa', '#a78bfa'];
+const COLORS = ["#4ade80", "#f87171", "#fbbf24", "#60a5fa", "#a78bfa"];
 
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
@@ -27,22 +35,24 @@ const CustomTooltip = ({ active, payload }: any) => {
     return (
       <div className="bg-gray-800 border border-gray-700/50 rounded-lg shadow-xl p-4 backdrop-blur-sm">
         <div className="flex items-center gap-3 mb-2">
-          <div 
-            className="w-3 h-3 rounded-full" 
+          <div
+            className="w-3 h-3 rounded-full"
             style={{ backgroundColor: payload[0].payload.fill }}
           />
-          <span className="text-base font-medium text-white">
-            {data.name}
-          </span>
+          <span className="text-base font-medium text-white">{data.name}</span>
         </div>
         <div className="space-y-1">
           <div className="flex items-center justify-between gap-4">
             <span className="text-sm text-gray-400">Percentage:</span>
-            <span className="text-sm font-medium text-white">{data.value}%</span>
+            <span className="text-sm font-medium text-white">
+              {data.value}%
+            </span>
           </div>
           <div className="flex items-center justify-between gap-4">
             <span className="text-sm text-gray-400">Amount:</span>
-            <span className="text-sm font-medium text-white">₹{(data.value * 50).toFixed(2)}</span>
+            <span className="text-sm font-medium text-white">
+              ₹{(data.value * 50).toFixed(2)}
+            </span>
           </div>
         </div>
       </div>
@@ -70,7 +80,9 @@ export default function Dashboard() {
     { icon: Settings, label: "Settings", onClick: () => navigate("/settings") },
   ];
 
-  const { allTransactions } = useAppSelector((state: any) => state.transactions);
+  const { allTransactions } = useAppSelector(
+    (state: any) => state.transactions
+  );
 
   return (
     <div className="space-y-8 py-4 animate-fade-in">
@@ -104,23 +116,39 @@ export default function Dashboard() {
 
         {/* Summary Cards */}
         <section className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          {
-            summaryCards.map((card) => (
-              <div className="bg-gray-800 px-6 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group" key={card.title}>
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-gray-400 text-sm">{card.title}</h3>
-                  <div className="p-2 rounded-full bg-blue-500/10 group-hover:bg-blue-500/20 transition-colors duration-300">
-                    <card.icon className="w-5 h-5 text-blue-500" />
-                  </div>
-                </div>
-                <p className="text-2xl font-bold text-white mb-4">{card.value}</p>
-                <div className="flex items-center text-green-400 text-sm">
-                  <ArrowUpRight className={`w-4 h-4 mr-1 ${card.change.direction === "up" ? "text-green-400" : "text-red-400"}`} />
-                  <span className={`${card.change.direction === "up" ? "text-green-400" : "text-red-400"}`}>{card.change.direction === "up" ? "+" : "-"}{card.change.value}% from last month</span>
+          {summaryCards.map((card) => (
+            <div
+              className="bg-gray-800 px-6 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group"
+              key={card.title}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-gray-400 text-sm">{card.title}</h3>
+                <div className="p-2 rounded-full bg-blue-500/10 group-hover:bg-blue-500/20 transition-colors duration-300">
+                  <card.icon className="w-5 h-5 text-blue-500" />
                 </div>
               </div>
-            ))
-          }
+              <p className="text-2xl font-bold text-white mb-4">{card.value}</p>
+              <div className="flex items-center text-green-400 text-sm">
+                <ArrowUpRight
+                  className={`w-4 h-4 mr-1 ${
+                    card.change.direction === "up"
+                      ? "text-green-400"
+                      : "text-red-400"
+                  }`}
+                />
+                <span
+                  className={`${
+                    card.change.direction === "up"
+                      ? "text-green-400"
+                      : "text-red-400"
+                  }`}
+                >
+                  {card.change.direction === "up" ? "+" : "-"}
+                  {card.change.value}% from last month
+                </span>
+              </div>
+            </div>
+          ))}
         </section>
 
         {/* Charts */}
@@ -176,9 +204,9 @@ export default function Dashboard() {
                       />
                     ))}
                   </Pie>
-                  <Tooltip 
+                  <Tooltip
                     content={<CustomTooltip />}
-                    wrapperStyle={{ outline: 'none' }}
+                    wrapperStyle={{ outline: "none" }}
                   />
                 </PieChart>
               </ResponsiveContainer>
@@ -187,49 +215,73 @@ export default function Dashboard() {
         </section>
 
         {/* Recent Transactions Table */}
-        <section className="bg-gray-800 rounded-xl p-6 shadow-lg">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-white">Recent Transactions</h2>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="text-blue-400 hover:text-blue-300 text-sm font-medium flex items-center"
-            >
-              View All
-              <ChevronRight className="w-4 h-4 ml-1" />
-            </motion.button>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="border-b border-gray-700">
-                  <th className="text-left py-4 px-6 text-sm font-medium text-gray-400">Date</th>
-                  <th className="text-left py-4 px-6 text-sm font-medium text-gray-400">Description</th>
-                  <th className="text-left py-4 px-6 text-sm font-medium text-gray-400">Category</th>
-                  <th className="text-right py-4 px-6 text-sm font-medium text-gray-400">Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                {allTransactions.map((transaction: Transaction) => (
-                  <tr key={transaction._id} className="border-b border-gray-700/50 hover:bg-gray-700/30 transition-colors duration-200">
-                    <td className="py-4 px-6 text-sm text-gray-300">{formatDateReadable(transaction.date)}</td>
-                    <td className="py-4 px-6 text-sm text-white">{transaction.description}</td>
-                    <td className="py-4 px-6">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-700 text-gray-300">
-                        {transaction.category}
-                      </span>
-                    </td>
-                    <td className={`py-4 px-6 text-sm font-medium text-right ${
-                      transaction.type === 'income' ? 'text-green-400' : 'text-red-400'
-                    }`}>
-                      {transaction.type === 'income' ? '+' : '-'}₹ {transaction.amount}
-                    </td>
+        {allTransactions.length > 0 && (
+          <section className="bg-gray-800 rounded-xl p-6 shadow-lg">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold text-white">
+                Recent Transactions
+              </h2>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="text-blue-400 hover:text-blue-300 text-sm font-medium flex items-center"
+              >
+                View All
+                <ChevronRight className="w-4 h-4 ml-1" />
+              </motion.button>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="border-b border-gray-700">
+                    <th className="text-left py-4 px-6 text-sm font-medium text-gray-400">
+                      Date
+                    </th>
+                    <th className="text-left py-4 px-6 text-sm font-medium text-gray-400">
+                      Description
+                    </th>
+                    <th className="text-left py-4 px-6 text-sm font-medium text-gray-400">
+                      Category
+                    </th>
+                    <th className="text-right py-4 px-6 text-sm font-medium text-gray-400">
+                      Amount
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
+                </thead>
+                <tbody>
+                  {allTransactions.map((transaction: Transaction) => (
+                    <tr
+                      key={transaction._id}
+                      className="border-b border-gray-700/50 hover:bg-gray-700/30 transition-colors duration-200"
+                    >
+                      <td className="py-4 px-6 text-sm text-gray-300">
+                        {formatDateReadable(transaction.date)}
+                      </td>
+                      <td className="py-4 px-6 text-sm text-white">
+                        {transaction.description}
+                      </td>
+                      <td className="py-4 px-6">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-700 text-gray-300">
+                          {transaction.category}
+                        </span>
+                      </td>
+                      <td
+                        className={`py-4 px-6 text-sm font-medium text-right ${
+                          transaction.type === "income"
+                            ? "text-green-400"
+                            : "text-red-400"
+                        }`}
+                      >
+                        {transaction.type === "income" ? "+" : "-"}₹{" "}
+                        {transaction.amount}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
       </main>
     </div>
   );

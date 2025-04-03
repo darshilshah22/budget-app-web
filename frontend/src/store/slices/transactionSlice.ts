@@ -90,7 +90,7 @@ export const createTransaction = createAsyncThunk(
 export const updateTransaction = createAsyncThunk(
   "transactions/updateTransaction",
   async (
-    { id, data }: { id: string; data: Partial<CreateTransactionData> },
+    { id, data }: { id: string; data: Transaction },
     { rejectWithValue, dispatch, getState }
   ) => {
     try {

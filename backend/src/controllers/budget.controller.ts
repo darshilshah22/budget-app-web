@@ -10,6 +10,7 @@ export const createBudget = async (req: Request, res: Response) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.log(errors);
       return res.status(400).json(new ApiError(400, 'Validation error', errors.array()));
     }
 
@@ -31,6 +32,7 @@ export const createBudget = async (req: Request, res: Response) => {
     const budget = await BudgetService.createBudget(req.user._id.toString(), req.body);
     res.status(201).json(new ApiResponse(201, 'Budget created successfully', budget));
   } catch (error) {
+    console.log(error);
     if (error instanceof Error) {
       res.status(400).json(new ApiError(400, error.message));
     } else {

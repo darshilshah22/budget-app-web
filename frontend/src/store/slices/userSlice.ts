@@ -2,12 +2,15 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { api, authService } from "../../services/api";
 import axios from "axios";
 import toast from "react-hot-toast";
-interface User {
+export interface User {
   id: string;
   email: string;
   firstName: string;
   lastName: string;
   token: string;
+  currency: string;
+  phone: string;
+  location: string;
 }
 
 interface UserState {
@@ -32,7 +35,6 @@ export const login = createAsyncThunk(
   ) => {
     try {
       const response = await authService.signIn(credentials);
-      localStorage.setItem("user", JSON.stringify(response.data));
       return response.data;
     } catch (error: any) {
       console.log(error);
@@ -44,7 +46,7 @@ export const login = createAsyncThunk(
 export const register = createAsyncThunk(
   "user/register",
   async (
-    userData: { name: string; email: string; password: string },
+    userData: { firstName: string; lastName: string; email: string; password: string },
     { rejectWithValue }
   ) => {
     try {
@@ -77,6 +79,7 @@ export const getUser = createAsyncThunk(
           Authorization: `Bearer ${JSON.parse(user).token}`,
         },
       });
+      response.data.data.token = JSON.parse(user).token;
       return response.data.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 401) {
@@ -128,8 +131,9 @@ const userSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user = action.payload;
+        state.user = action.payload as User;
         state.isAuthenticated = true;
+        localStorage.setItem("user", JSON.stringify(action.payload));
       })
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;
@@ -165,6 +169,7 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.user = action.payload;
         state.isAuthenticated = true;
+        localStorage.setItem("user", JSON.stringify(action.payload));
       })
       .addCase(getUser.rejected, (state, action) => {
         state.isLoading = false;

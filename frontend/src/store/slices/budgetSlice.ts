@@ -1,5 +1,5 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { Budget, budgetService } from '../../services/api';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { Budget, budgetService } from "../../services/api";
 
 interface BudgetState {
   budgets: Budget[];
@@ -14,7 +14,7 @@ const initialState: BudgetState = {
 };
 
 export const fetchBudgets = createAsyncThunk(
-  'budgets/fetchBudgets',
+  "budgets/fetchBudgets",
   async () => {
     const response = await budgetService.getBudgets();
     return response.data;
@@ -22,29 +22,41 @@ export const fetchBudgets = createAsyncThunk(
 );
 
 export const createBudget = createAsyncThunk(
-  'budgets/createBudget',
-  async (data: Pick<Budget, 'category' | 'amount' | 'startDate' | 'endDate'>) => {
-    const response = await budgetService.createBudget({
-      ...data,
-      user: '', // Will be set by the backend
-      spent: 0,
-      remaining: data.amount,
-      isActive: true,
-    });
-    return response.data;
+  "budgets/createBudget",
+  async (data: Budget, { rejectWithValue }) => {
+    try {
+      const response = await budgetService.createBudget({
+        ...data,
+        user: "", // Will be set by the backend
+        spent: 0,
+        remaining: data.amount,
+        isActive: true,
+      });
+      console.log(response);
+      return response.data;
+    } catch (error: any) {
+      console.log(error.response.data.data[0].msg);
+      return rejectWithValue(error.response.data.data[0].msg || "Login failed");
+    }
   }
 );
 
 export const updateBudget = createAsyncThunk(
-  'budgets/updateBudget',
-  async ({ id, data }: { id: string; data: Pick<Budget, 'category' | 'amount' | 'startDate' | 'endDate'> }) => {
+  "budgets/updateBudget",
+  async ({
+    id,
+    data,
+  }: {
+    id: string;
+    data: Pick<Budget, "category" | "amount" | "startDate" | "endDate">;
+  }) => {
     const response = await budgetService.updateBudget(id, data);
     return response.data;
   }
 );
 
 export const deleteBudget = createAsyncThunk(
-  'budgets/deleteBudget',
+  "budgets/deleteBudget",
   async (id: string) => {
     await budgetService.deleteBudget(id);
     return id;
@@ -52,7 +64,7 @@ export const deleteBudget = createAsyncThunk(
 );
 
 const budgetSlice = createSlice({
-  name: 'budgets',
+  name: "budgets",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -68,7 +80,7 @@ const budgetSlice = createSlice({
       })
       .addCase(fetchBudgets.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message || 'Failed to fetch budgets';
+        state.error = action.error.message || "Failed to fetch budgets";
       })
       // Create Budget
       .addCase(createBudget.pending, (state) => {
@@ -81,7 +93,8 @@ const budgetSlice = createSlice({
       })
       .addCase(createBudget.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message || 'Failed to create budget';
+        console.log(action);
+        state.error = action.payload as any || "Failed to create budget";
       })
       // Update Budget
       .addCase(updateBudget.pending, (state) => {
@@ -90,14 +103,16 @@ const budgetSlice = createSlice({
       })
       .addCase(updateBudget.fulfilled, (state, action) => {
         state.isLoading = false;
-        const index = state.budgets.findIndex(budget => budget._id === action.payload._id);
+        const index = state.budgets.findIndex(
+          (budget) => budget._id === action.payload._id
+        );
         if (index !== -1) {
           state.budgets[index] = action.payload;
         }
       })
       .addCase(updateBudget.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message || 'Failed to update budget';
+        state.error = action.error.message || "Failed to update budget";
       })
       // Delete Budget
       .addCase(deleteBudget.pending, (state) => {
@@ -106,13 +121,15 @@ const budgetSlice = createSlice({
       })
       .addCase(deleteBudget.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.budgets = state.budgets.filter(budget => budget._id !== action.payload);
+        state.budgets = state.budgets.filter(
+          (budget) => budget._id !== action.payload
+        );
       })
       .addCase(deleteBudget.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message || 'Failed to delete budget';
+        state.error = action.error.message || "Failed to delete budget";
       });
   },
 });
 
-export default budgetSlice.reducer; 
+export default budgetSlice.reducer;

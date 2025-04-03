@@ -137,9 +137,9 @@ export default function Calendar() {
                 {day}
               </div>
             ))}
-            {daysInMonth.map((day) => (
+            {daysInMonth.map((day, index) => (
               <motion.div
-                key={day}
+                key={index}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.2 }}

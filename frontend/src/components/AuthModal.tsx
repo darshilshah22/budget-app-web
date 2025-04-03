@@ -39,7 +39,8 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
       if (isSignUp) {
         await dispatch(
           register({
-            name: `${firstName} ${lastName}`,
+            firstName: firstName,
+            lastName: lastName,
             email,
             password,
           })

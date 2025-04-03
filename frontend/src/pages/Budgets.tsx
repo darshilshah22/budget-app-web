@@ -33,14 +33,18 @@ export default function Budgets() {
   const { budgets, isLoading: budgetsLoading, error: budgetsError } = useAppSelector((state) => state.budgets);
   const { insights, isLoading: insightsLoading, error: insightsError } = useAppSelector((state) => state.insights);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedPeriod, setSelectedPeriod] = useState<'week' | 'month' | 'year'>('month');
   const [showAddBudget, setShowAddBudget] = useState(false);
   const [selectedBudget, setSelectedBudget] = useState<Budget | null>(null);
 
   useEffect(() => {
-    dispatch(fetchBudgets());
-    dispatch(fetchInsights());
-  }, [dispatch]);
+    const fetchData = async () => {
+      await dispatch(fetchBudgets());
+      await dispatch(fetchInsights());
+    };
+    
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (budgetsError) {
@@ -51,7 +55,7 @@ export default function Budgets() {
     }
   }, [budgetsError, insightsError]);
 
-  const handleAddBudget = async (data: Pick<Budget, 'category' | 'amount' | 'startDate' | 'endDate'>) => {
+  const handleAddBudget = async (data: Budget) => {
     try {
       await dispatch(createBudget(data)).unwrap();
       toast.success('Budget created successfully');
@@ -61,7 +65,7 @@ export default function Budgets() {
     }
   };
 
-  const handleUpdateBudget = async (data: Pick<Budget, 'category' | 'amount' | 'startDate' | 'endDate'>) => {
+  const handleUpdateBudget = async (data: Budget) => {
     if (!selectedBudget) return;
     try {
       await dispatch(updateBudget({ id: selectedBudget._id, data })).unwrap();
@@ -141,21 +145,6 @@ export default function Budgets() {
         {/* Filters Section */}
         <Card className="hover-card">
           <div className="flex items-center justify-between">
-            <div className="flex rounded-lg overflow-hidden">
-              {(['week', 'month', 'year'] as const).map((period) => (
-                <motion.button
-                  key={period}
-                  onClick={() => setSelectedPeriod(period)}
-                  className={`px-8 py-3 text-sm font-medium transition-all duration-200 ${
-                    selectedPeriod === period
-                      ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md'
-                      : 'text-gray-400 hover:text-white hover:bg-gray-800 bg-gray-800'
-                  }`}
-                >
-                  {period.charAt(0).toUpperCase() + period.slice(1)}
-                </motion.button>
-              ))}
-            </div>
             <div className="flex items-center space-x-4">
               <div className="relative">
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -404,6 +393,11 @@ export default function Budgets() {
         }}
         title={selectedBudget ? 'Edit Budget' : 'New Budget'}
       >
+        {budgetsError && (
+            <div className="p-3 mb-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm">
+              {budgetsError}
+            </div>
+          )}
         <BudgetForm
           onSubmit={selectedBudget ? handleUpdateBudget : handleAddBudget}
           onCancel={() => {

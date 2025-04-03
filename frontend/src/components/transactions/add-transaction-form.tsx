@@ -11,11 +11,12 @@ import {
   Wallet,
 } from "lucide-react";
 import { cn } from "../../lib/utils";
-import { CreateTransactionData } from "../../services/api";
+import { Transaction } from "../../services/api";
 
 interface AddTransactionFormProps {
-  onSubmit: (transaction: CreateTransactionData) => void;
+  onSubmit: (transaction: Transaction) => void;
   onCancel: () => void;
+  transaction?: Transaction;
 }
 
 // Predefined categories for expenses and income
@@ -55,16 +56,17 @@ const paymentTypes = [
 export function AddTransactionForm({
   onSubmit,
   onCancel,
+  transaction,
 }: AddTransactionFormProps) {
   const [type, setType] = useState<"income" | "expense">("expense");
   const [showTypeDropdown, setShowTypeDropdown] = useState(false);
   const [formData, setFormData] = useState({
-    description: "",
-    amount: "",
-    category: "",
-    customCategory: "",
-    date: new Date().toISOString().split("T")[0],
-    paymentType: "cash",
+    description: transaction?.description || "",
+    amount: transaction?.amount || "",
+    category: transaction?.category || "",
+    customCategory: transaction?.category === "Other" ? transaction?.category : "",
+    date: transaction?.date ? new Date(transaction?.date).toISOString().split("T")[0] : new Date().toISOString().split("T")[0],
+    paymentType: transaction?.paymentType || "cash",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -75,6 +77,8 @@ export function AddTransactionForm({
       amount: Number(formData.amount),
       type,
       paymentType: formData.paymentType,
+      date: formData.date,
+      _id: transaction?._id || "",
     });
   };
 
