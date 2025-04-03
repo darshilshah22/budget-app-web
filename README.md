@@ -30,7 +30,7 @@ A simple and efficient budget tracking application built with ReactJS, NodeJS, E
 1. **Clone the Repository**
    
    ```sh
-   git clone https://github.com/your-username/budget-tracker.git
+   git clone https://github.com/darshilshah22/budget-app-web.git
    cd budget-tracker
 
 2. ```sh
