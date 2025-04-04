@@ -25,8 +25,12 @@ const app = express();
 
 // Middleware
 app.use(helmet());
+// app.use(cors({
+//   origin: 'http://localhost:5173',
+//   credentials: true,
+// }));
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' ? 'https://budget-app-web-six.vercel.app' : 'http://localhost:5173',
+  origin: 'https://budget-app-web-six.vercel.app',
   credentials: true,
 }));
 app.use(compression());
